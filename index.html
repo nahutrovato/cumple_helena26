@@ -4,18 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
-  <meta name="theme-color" content="#fbf6f1">
+  <meta name="theme-color" content="#fbf1f3">
   <title>El cumple de Helena</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=DM+Serif+Display&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
   <!-- Pantalla de clave -->
   <main id="gate" class="gate" hidden>
+    <img class="deco deco-stars" src="img/estrellas.jpg" alt="">
+    <img class="deco deco-fairy" src="img/hada.jpg" alt="">
     <div class="card">
-      <p class="eyebrow">Bienvenidos al cumple de</p>
+      <p class="eyebrow">El bosque encantado de</p>
       <h1 class="name" data-nombre>Helena</h1>
       <div class="flourish" aria-hidden="true"></div>
       <form id="gate-form" autocomplete="off">
@@ -30,7 +32,9 @@
   <!-- Galería -->
   <div id="app" hidden>
     <header class="hero">
-      <p class="eyebrow">El cumple de</p>
+      <img class="deco deco-stars" src="img/estrellas.jpg" alt="">
+      <img class="deco deco-fairy" src="img/hada.jpg" alt="">
+      <p class="eyebrow">El bosque encantado de</p>
       <h1 class="name" data-nombre>Helena</h1>
       <div class="flourish" aria-hidden="true"></div>
       <p class="subtitle" id="subtitle"></p>
@@ -53,7 +57,10 @@
       <p id="empty" class="empty" hidden>Todavía no hay fotos.<br>¡Subí la primera!</p>
     </section>
 
-    <footer class="footer">Hecho con cariño para Helena</footer>
+    <footer class="footer">
+      <p>Hecho con cariño para Helena</p>
+      <img src="img/bosque.jpg" alt="" width="1080" height="275">
+    </footer>
   </div>
 
   <!-- Visor de fotos -->

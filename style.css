@@ -1,14 +1,16 @@
+/* Estilo "El bosque encantado", tomado de la invitación del cumple. */
 :root {
-  --bg: #fbf6f1;
-  --card: #fffdfb;
-  --ink: #5b4a4a;
-  --ink-soft: #9a8585;
-  --rose: #d9a1a7;
-  --rose-deep: #c4838b;
-  --rose-pale: #f6e1e2;
-  --sage: #b9c9b5;
-  --line: #efe3dc;
-  --radius: 18px;
+  --bg: #fbf1f3;          /* rosa muy claro del fondo de la invitación */
+  --card: #ffffff;        /* blanco del arco */
+  --ink: #6f5f5f;
+  --ink-soft: #a89494;
+  --magenta: #d3749e;     /* color del nombre */
+  --magenta-deep: #c25d8b;
+  --rose-pale: #f7e3e8;
+  --dusty: #c9a59f;       /* rosa viejo del título curvo */
+  --gold: #e9d199;        /* estrellas */
+  --sage: #b5cdaa;        /* hojas */
+  --line: #f3dfe3;
 }
 
 * { box-sizing: border-box; }
@@ -22,39 +24,57 @@ body {
   min-height: 100dvh;
   font-family: "Nunito", system-ui, sans-serif;
   color: var(--ink);
-  background:
-    radial-gradient(60vmax 40vmax at 0% 0%, #f9e4e3 0%, transparent 60%),
-    radial-gradient(50vmax 40vmax at 100% 10%, #e9f0e4 0%, transparent 60%),
-    radial-gradient(60vmax 50vmax at 50% 110%, #fbead9 0%, transparent 60%),
-    var(--bg);
-  background-attachment: fixed;
+  background: var(--bg);
+  overflow-x: hidden;
+}
+
+/* Los dibujos vienen con fondo claro: "multiply" los funde con el rosa de la página. */
+.deco {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  mix-blend-mode: multiply;
+}
+.deco-stars {
+  top: 0;
+  left: 0;
+  width: min(40vw, 230px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent);
+  mask-image: linear-gradient(to bottom, #000 70%, transparent);
+}
+.deco-fairy {
+  top: 0;
+  right: 0;
+  width: min(40vw, 240px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent);
+  mask-image: linear-gradient(to bottom, #000 78%, transparent);
 }
 
 .eyebrow {
   margin: 0;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
+  font-family: "DM Serif Display", Georgia, serif;
+  font-size: clamp(1.25rem, 5.6vw, 1.7rem);
+  line-height: 1.15;
+  color: var(--dusty);
 }
 
 .name {
-  margin: 0.1em 0 0;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-style: italic;
-  font-weight: 500;
-  font-size: clamp(3.4rem, 17vw, 6rem);
-  line-height: 1;
-  color: var(--rose-deep);
+  margin: 0;
+  font-family: "Dancing Script", "Segoe Script", cursive;
+  font-weight: 700;
+  font-size: clamp(4.2rem, 21vw, 7rem);
+  line-height: 1.05;
+  color: var(--magenta);
 }
 
 .flourish {
-  width: 120px;
-  height: 14px;
-  margin: 14px auto 0;
+  width: 150px;
+  height: 18px;
+  margin: 6px auto 0;
   background:
-    radial-gradient(circle, var(--rose) 0 3px, transparent 3.5px) center / 14px 14px no-repeat,
+    radial-gradient(circle, var(--gold) 0 3.5px, transparent 4px) center / 18px 18px no-repeat,
+    radial-gradient(circle, var(--gold) 0 2px, transparent 2.5px) calc(50% - 20px) center / 18px 18px no-repeat,
+    radial-gradient(circle, var(--gold) 0 2px, transparent 2.5px) calc(50% + 20px) center / 18px 18px no-repeat,
     linear-gradient(var(--sage), var(--sage)) left center / 44px 1.5px no-repeat,
     linear-gradient(var(--sage), var(--sage)) right center / 44px 1.5px no-repeat;
 }
@@ -72,8 +92,8 @@ body {
   font-weight: 700;
   font-size: 1rem;
   color: #fff;
-  background: linear-gradient(135deg, var(--rose), var(--rose-deep));
-  box-shadow: 0 8px 22px -10px rgba(196, 131, 139, 0.9);
+  background: linear-gradient(135deg, #e08db2, var(--magenta-deep));
+  box-shadow: 0 10px 24px -12px rgba(194, 93, 139, 0.9);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -88,23 +108,26 @@ body {
 
 /* ---------- Pantalla de clave ---------- */
 .gate {
+  position: relative;
   min-height: 100vh;
   min-height: 100dvh;
   display: grid;
   place-items: center;
   padding: 24px 16px;
   text-align: center;
+  overflow: hidden;
 }
 .card {
+  position: relative;
   width: 100%;
-  max-width: 400px;
-  padding: 40px 26px 34px;
+  max-width: 380px;
+  padding: 84px 26px 36px;
   background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 28px;
-  box-shadow: 0 30px 60px -40px rgba(120, 80, 80, 0.5);
+  /* arco blanco, como en la invitación */
+  border-radius: 190px 190px 28px 28px;
+  box-shadow: 0 30px 60px -44px rgba(160, 90, 110, 0.55);
 }
-.card form { margin-top: 28px; display: grid; gap: 14px; }
+.card form { margin-top: 26px; display: grid; gap: 14px; }
 .card label { font-size: 0.98rem; color: var(--ink); }
 .card input {
   width: 100%;
@@ -119,11 +142,20 @@ body {
 }
 .error { margin: 0; font-size: 0.92rem; color: #b5565f; }
 
+#app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
 /* ---------- Portada ---------- */
 .hero {
-  padding: 52px 16px 30px;
+  position: relative;
+  padding: clamp(96px, 27vw, 150px) 16px 30px;
   text-align: center;
 }
+.hero > :not(.deco) { position: relative; }
 .subtitle {
   max-width: 30ch;
   margin: 18px auto 26px;
@@ -154,13 +186,14 @@ body {
 .bar > div {
   height: 100%;
   width: 0;
-  background: linear-gradient(90deg, var(--rose), var(--rose-deep));
+  background: linear-gradient(90deg, #e08db2, var(--magenta-deep));
   border-radius: 999px;
   transition: width 0.2s ease;
 }
 
 /* ---------- Galería ---------- */
 .gallery-wrap {
+  width: 100%;
   max-width: 1000px;
   margin: 0 auto;
   padding: 0 16px;
@@ -186,10 +219,11 @@ body {
   position: relative;
   aspect-ratio: 1;
   padding: 0;
-  border: 0;
-  border-radius: 12px;
+  border: 3px solid #fff;
+  border-radius: 14px;
   overflow: hidden;
   background: var(--rose-pale);
+  box-shadow: 0 6px 16px -12px rgba(160, 90, 110, 0.7);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
@@ -206,18 +240,37 @@ body {
 .empty {
   margin: 30px 0;
   text-align: center;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-style: italic;
-  font-size: 1.5rem;
-  line-height: 1.35;
-  color: var(--ink-soft);
+  font-family: "Dancing Script", cursive;
+  font-weight: 700;
+  font-size: 1.7rem;
+  line-height: 1.3;
+  color: var(--dusty);
 }
 
+/* ---------- Pie con los animalitos ---------- */
 .footer {
-  padding: 44px 16px 36px;
+  margin-top: auto;
+  padding: 40px 0 0;
   text-align: center;
   font-size: 0.8rem;
   color: var(--ink-soft);
+}
+.footer p { margin: 0 16px; }
+.footer img {
+  display: block;
+  width: 100%;
+  max-width: 760px;
+  height: auto;
+  margin: 6px auto 0;
+  mix-blend-mode: multiply;
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent, #000 22%),
+    linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to bottom, transparent, #000 22%),
+    linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  mask-composite: intersect;
 }
 
 /* ---------- Visor ---------- */
@@ -227,7 +280,7 @@ body {
   z-index: 10;
   display: grid;
   place-items: center;
-  background: rgba(52, 40, 40, 0.94);
+  background: rgba(58, 40, 48, 0.94);
   touch-action: pan-y;
 }
 .lightbox img {
