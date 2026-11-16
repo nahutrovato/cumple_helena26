@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#fbf6f1">
+  <title>El cumple de Helena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Pantalla de clave -->
+  <main id="gate" class="gate" hidden>
+    <div class="card">
+      <p class="eyebrow">Bienvenidos al cumple de</p>
+      <h1 class="name" data-nombre>Helena</h1>
+      <div class="flourish" aria-hidden="true"></div>
+      <form id="gate-form" autocomplete="off">
+        <label for="key-input">Ingresá la clave para ver y subir fotos</label>
+        <input id="key-input" type="text" inputmode="text" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Clave" required>
+        <p id="gate-error" class="error" role="alert" hidden>Esa clave no es correcta. Probá de nuevo.</p>
+        <button type="submit" class="btn">Entrar</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Galería -->
+  <div id="app" hidden>
+    <header class="hero">
+      <p class="eyebrow">El cumple de</p>
+      <h1 class="name" data-nombre>Helena</h1>
+      <div class="flourish" aria-hidden="true"></div>
+      <p class="subtitle" id="subtitle"></p>
+      <button id="upload-btn" class="btn btn-big" type="button">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2l1.2-1.8h6.2L16.3 6h1.2A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5zM12 9.2a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8z"/></svg>
+        Subir fotos
+      </button>
+      <input id="file-input" type="file" accept="image/*" multiple hidden>
+      <p id="demo-note" class="demo-note" hidden>Modo demo: las fotos que subas no se guardan.</p>
+    </header>
+
+    <section id="progress" class="progress" hidden aria-live="polite">
+      <p id="progress-text"></p>
+      <div class="bar"><div id="progress-bar"></div></div>
+    </section>
+
+    <section class="gallery-wrap">
+      <p id="count" class="count"></p>
+      <div id="gallery" class="gallery"></div>
+      <p id="empty" class="empty" hidden>Todavía no hay fotos.<br>¡Subí la primera!</p>
+    </section>
+
+    <footer class="footer">Hecho con cariño para Helena</footer>
+  </div>
+
+  <!-- Visor de fotos -->
+  <div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-label="Foto ampliada">
+    <button class="lb-btn lb-close" id="lb-close" aria-label="Cerrar">&times;</button>
+    <button class="lb-btn lb-prev" id="lb-prev" aria-label="Anterior">&#8249;</button>
+    <img id="lb-img" alt="Foto del cumple">
+    <button class="lb-btn lb-next" id="lb-next" aria-label="Siguiente">&#8250;</button>
+    <a id="lb-download" class="lb-download" download>Descargar</a>
+  </div>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
