@@ -71,6 +71,10 @@
     app.hidden = false;
     $("demo-note").hidden = !DEMO;
     loadPhotos();
+    loadMensajes();
+    setInterval(() => {
+      if (!document.hidden) loadMensajes();
+    }, 60000);
     setInterval(() => {
       if (!document.hidden && !uploading && $("lightbox").hidden) loadPhotos();
     }, REFRESH_MS);
@@ -299,6 +303,71 @@
     touchX = null;
     if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1);
   });
+
+  // ---------- Mensajes de los invitados ----------
+  // Vienen de la planilla de confirmaciones de la invitación. Se muestran en tarjetas
+  // que se deslizan solas cada 6 segundos (salvo que la persona las esté tocando).
+  const track = $("mensajes-track");
+  const dots = $("mensajes-dots");
+  let mensajesFirma = "";
+  let autoTimer = null;
+  let pausa = false;
+
+  const escHtml = (s) =>
+    String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  async function loadMensajes() {
+    if (!CFG.mensajesUrl) return;
+    try {
+      const r = await fetch(CFG.mensajesUrl, { cache: "no-store" });
+      const data = await r.json();
+      const lista = (data && data.mensajes) || [];
+      const firma = JSON.stringify(lista);
+      if (firma === mensajesFirma) return; // nada nuevo
+      mensajesFirma = firma;
+      renderMensajes(lista);
+    } catch {
+      /* sin conexión o planilla no disponible: la sección queda como estaba */
+    }
+  }
+
+  function renderMensajes(lista) {
+    $("mensajes").hidden = lista.length === 0;
+    track.innerHTML = lista
+      .map(
+        (m) =>
+          `<figure class="msg"><blockquote>${escHtml(m.mensaje)}</blockquote>` +
+          `<figcaption>${escHtml(m.nombre)}</figcaption></figure>`
+      )
+      .join("");
+    dots.innerHTML = lista.length > 1 ? lista.map(() => "<span></span>").join("") : "";
+    track.scrollLeft = 0;
+    marcarDot();
+    clearInterval(autoTimer);
+    if (lista.length > 1 && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      autoTimer = setInterval(avanzar, 6000);
+    }
+  }
+
+  function indiceActual() {
+    const w = track.clientWidth || 1;
+    return Math.round(track.scrollLeft / w);
+  }
+  function marcarDot() {
+    const i = indiceActual();
+    [...dots.children].forEach((d, j) => d.classList.toggle("on", i === j));
+  }
+  function avanzar() {
+    if (pausa || document.hidden || !$("lightbox").hidden) return;
+    const total = track.children.length;
+    const sig = (indiceActual() + 1) % total;
+    track.scrollTo({ left: sig * track.clientWidth, behavior: "smooth" });
+  }
+  track.addEventListener("scroll", () => requestAnimationFrame(marcarDot), { passive: true });
+  ["pointerdown", "focusin", "mouseenter"].forEach((ev) => track.addEventListener(ev, () => { pausa = true; }));
+  ["pointerup", "focusout", "mouseleave"].forEach((ev) =>
+    track.addEventListener(ev, () => { setTimeout(() => { pausa = false; }, 4000); })
+  );
 
   // ---------- Aviso ----------
   let toastTimer;

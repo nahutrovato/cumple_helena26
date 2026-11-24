@@ -11,4 +11,8 @@ window.CONFIG = {
   // Textos de la portada.
   nombre: "Helena",
   subtitulo: "¡Gracias por venir a festejar! Compartí acá tus fotos del cumple.",
+
+  // Mensajes que dejan los invitados al confirmar en la invitación (planilla de Google).
+  // Vacío = no se muestra la sección.
+  mensajesUrl: "https://script.google.com/macros/s/AKfycbxxp5Jq7LrNADnoTnGH-qAfuWy64lEQRZmRsz8TZkFVtaGLjNuFHDtiPRl5AaUK-cPr4Q/exec?accion=mensajes",
 };
