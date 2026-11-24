@@ -71,10 +71,17 @@
     app.hidden = false;
     $("demo-note").hidden = !DEMO;
     loadPhotos();
-    loadMensajes();
-    setInterval(() => {
-      if (!document.hidden) loadMensajes();
-    }, 60000);
+    if (CFG.mensajesUrl) {
+      $("mensajes").hidden = false;
+      loadMensajes();
+      // Casi en tiempo real: busca mensajes nuevos cada 15 segundos y al volver a la pestaña.
+      setInterval(() => {
+        if (!document.hidden) loadMensajes();
+      }, 15000);
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) loadMensajes();
+      });
+    }
     setInterval(() => {
       if (!document.hidden && !uploading && $("lightbox").hidden) loadPhotos();
     }, REFRESH_MS);
@@ -316,29 +323,43 @@
   const escHtml = (s) =>
     String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
+  let mensajesActuales = [];
+  let cargando = false;
+
   async function loadMensajes() {
-    if (!CFG.mensajesUrl) return;
+    if (!CFG.mensajesUrl || cargando) return;
+    cargando = true;
     try {
       const r = await fetch(CFG.mensajesUrl, { cache: "no-store" });
       const data = await r.json();
-      const lista = (data && data.mensajes) || [];
+      if (!data || !data.ok) return;
+      const lista = data.mensajes || [];
       const firma = JSON.stringify(lista);
       if (firma === mensajesFirma) return; // nada nuevo
       mensajesFirma = firma;
       renderMensajes(lista);
     } catch {
       /* sin conexión o planilla no disponible: la sección queda como estaba */
+    } finally {
+      cargando = false;
     }
   }
 
   function renderMensajes(lista) {
-    $("mensajes").hidden = lista.length === 0;
+    // Los que no estaban antes entran con una animación suave.
+    const antes = new Set(mensajesActuales.map((m) => m.nombre + "|" + m.mensaje));
+    const hayPrevios = mensajesActuales.length > 0;
+    mensajesActuales = lista;
+    $("mensajes-vacio").hidden = lista.length > 0;
+    track.hidden = lista.length === 0;
     track.innerHTML = lista
-      .map(
-        (m) =>
-          `<figure class="msg"><blockquote>${escHtml(m.mensaje)}</blockquote>` +
+      .map((m) => {
+        const nuevo = hayPrevios && !antes.has(m.nombre + "|" + m.mensaje) ? " nuevo" : "";
+        return (
+          `<figure class="msg${nuevo}"><blockquote>${escHtml(m.mensaje)}</blockquote>` +
           `<figcaption>${escHtml(m.nombre)}</figcaption></figure>`
-      )
+        );
+      })
       .join("");
     dots.innerHTML = lista.length > 1 ? lista.map(() => "<span></span>").join("") : "";
     track.scrollLeft = 0;
@@ -368,6 +389,61 @@
   ["pointerup", "focusout", "mouseleave"].forEach((ev) =>
     track.addEventListener(ev, () => { setTimeout(() => { pausa = false; }, 4000); })
   );
+
+  // ---------- Dejar un mensaje ----------
+  const NOMBRE_KEY = "cumple-nombre";
+  const msgDialog = $("msg-dialog");
+  const msgForm = $("msg-form");
+  const msgTexto = $("msg-texto");
+
+  $("msg-open").addEventListener("click", () => {
+    try { $("msg-nombre").value ||= localStorage.getItem(NOMBRE_KEY) || ""; } catch { /* sin almacenamiento */ }
+    $("msg-error").hidden = true;
+    msgDialog.showModal();
+    ($("msg-nombre").value ? msgTexto : $("msg-nombre")).focus();
+  });
+  $("msg-close").addEventListener("click", () => msgDialog.close());
+  msgDialog.addEventListener("click", (e) => { if (e.target === msgDialog) msgDialog.close(); });
+  msgTexto.addEventListener("input", () => { $("msg-count").textContent = msgTexto.value.length; });
+
+  msgForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const nombre = $("msg-nombre").value.trim().replace(/\s+/g, " ");
+    const mensaje = msgTexto.value.trim();
+    const err = (t) => { $("msg-error").textContent = t; $("msg-error").hidden = false; };
+    $("msg-error").hidden = true;
+    if (nombre.length < 2) return err("Escribí tu nombre.");
+    if (mensaje.length < 2) return err("Escribí tu mensaje.");
+
+    const btn = $("msg-enviar");
+    btn.disabled = true;
+    btn.textContent = "Enviando…";
+    try {
+      const r = await fetch(CFG.mensajesUrl.split("?")[0], {
+        method: "POST",
+        // text/plain evita el "preflight" que Google no acepta
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ tipo: "mensaje", nombre, mensaje, web: $("msg-web").value }),
+      });
+      const data = await r.json();
+      if (!data || !data.ok) throw new Error("rechazado");
+      try { localStorage.setItem(NOMBRE_KEY, nombre); } catch { /* sin almacenamiento */ }
+      msgDialog.close();
+      msgTexto.value = "";
+      $("msg-count").textContent = "0";
+      // Se muestra al instante, sin esperar a la próxima consulta.
+      mensajesFirma = "";
+      renderMensajes([{ nombre, mensaje, fecha: new Date().toISOString() }, ...mensajesActuales]);
+      $("mensajes").scrollIntoView({ behavior: "smooth", block: "center" });
+      toast("¡Gracias! Tu mensaje ya está en la pared.");
+      setTimeout(loadMensajes, 3000);
+    } catch {
+      err("No se pudo enviar. Revisá tu conexión y probá de nuevo.");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Enviar mensaje";
+    }
+  });
 
   // ---------- Aviso ----------
   let toastTimer;
