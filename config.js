@@ -14,5 +14,5 @@ window.CONFIG = {
 
   // Mensajes que dejan los invitados al confirmar en la invitación (planilla de Google).
   // Vacío = no se muestra la sección.
-  mensajesUrl: "https://script.google.com/macros/s/AKfycbxxp5Jq7LrNADnoTnGH-qAfuWy64lEQRZmRsz8TZkFVtaGLjNuFHDtiPRl5AaUK-cPr4Q/exec?accion=mensajes",
+  mensajesUrl: "https://script.google.com/macros/s/AKfycbwisC9_e7zf0mQDSieY3vVMxnZ0LjDit7dQ51et2lGACyraaVcIu6ekj9ubN9FtfDGXSQ/exec?accion=mensajes",
 };
